@@ -1,8 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-  compileSdkVersion 23
-  buildToolsVersion "23.0.2"
+  compileSdkVersion 'android-N'
+  buildToolsVersion '24.0.0-rc1'
+  dexOptions {
+    jumboMode true
+    incremental true
+    javaMaxHeapSize "4g"
+  }
 
   sourceSets.main {
     jniLibs.srcDir 'libs'
@@ -12,8 +17,8 @@ android {
 
   defaultConfig {
     applicationId "org.appspot.apprtc"
-    minSdkVersion 16
-    targetSdkVersion 22
+    minSdkVersion 'N'
+    targetSdkVersion 'N'
 
     versionCode 11835
     versionName "r11835"
