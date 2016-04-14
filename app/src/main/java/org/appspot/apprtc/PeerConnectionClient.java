@@ -360,7 +360,6 @@ public class PeerConnectionClient {
     numberOfCameras = CameraEnumerationAndroid.getDeviceCount();
     if (numberOfCameras == 0) {
       Log.w(TAG, "No camera on device. Switch to audio only call.");
-      videoCallEnabled = false;
     }
     // Create video constraints if video call is enabled.
     if (videoCallEnabled) {
@@ -468,7 +467,8 @@ public class PeerConnectionClient {
         EnumSet.of(Logging.TraceLevel.TRACE_DEFAULT),
         Logging.Severity.LS_INFO);
 
-    mediaStream = factory.createLocalMediaStream("ARDAMS");
+//    mediaStream = factory.createLocalMediaStream("ARDAMS");
+
     if (videoCallEnabled) {
       String cameraDeviceName = CameraEnumerationAndroid.getDeviceName(0);
       String frontCameraDeviceName =
@@ -476,20 +476,20 @@ public class PeerConnectionClient {
       if (numberOfCameras > 1 && frontCameraDeviceName != null) {
         cameraDeviceName = frontCameraDeviceName;
       }
-      Log.d(TAG, "Opening camera: " + cameraDeviceName);
-      videoCapturer = VideoCapturerAndroid.create(cameraDeviceName, null,
-          peerConnectionParameters.captureToTexture ? renderEGLContext : null);
-      if (videoCapturer == null) {
-        reportError("Failed to open camera");
-        return;
-      }
-      mediaStream.addTrack(createVideoTrack(videoCapturer));
+//      Log.d(TAG, "Opening camera: " + cameraDeviceName);
+//      videoCapturer = VideoCapturerAndroid.create(cameraDeviceName, null,
+//          peerConnectionParameters.captureToTexture ? renderEGLContext : null);
+//      if (videoCapturer == null) {
+//        reportError("Failed to open camera");
+//        return;
+//      }
+//      mediaStream.addTrack(createVideoTrack(videoCapturer));
     }
 
-    mediaStream.addTrack(factory.createAudioTrack(
-        AUDIO_TRACK_ID,
-        factory.createAudioSource(audioConstraints)));
-    peerConnection.addStream(mediaStream);
+//    mediaStream.addTrack(factory.createAudioTrack(
+//        AUDIO_TRACK_ID,
+//        factory.createAudioSource(audioConstraints)));
+//    peerConnection.addStream(mediaStream);
 
     if (peerConnectionParameters.aecDump) {
       try {
@@ -981,10 +981,12 @@ public class PeerConnectionClient {
 
     @Override
     public void onRemoveStream(final MediaStream stream){
+      Log.e(TAG, "FTFT onRemoteStream: " + stream.toString());
       executor.execute(new Runnable() {
         @Override
         public void run() {
           remoteVideoTrack = null;
+          peerConnection.addStream(stream);
         }
       });
     }
@@ -999,6 +1001,7 @@ public class PeerConnectionClient {
     public void onRenegotiationNeeded() {
       // No need to do anything; AppRTC follows a pre-agreed-upon
       // signaling/negotiation protocol.
+      Log.e(TAG, "FTFT renegotiationNeeded");
     }
   }
 
