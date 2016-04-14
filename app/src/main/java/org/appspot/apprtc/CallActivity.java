@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
@@ -91,7 +92,7 @@ public class CallActivity extends Activity
   // List of mandatory application permissions.
   private static final String[] MANDATORY_PERMISSIONS = {
     "android.permission.MODIFY_AUDIO_SETTINGS",
-    "android.permission.RECORD_AUDIO",
+//    "android.permission.RECORD_AUDIO",
     "android.permission.INTERNET"
   };
 
@@ -136,6 +137,25 @@ public class CallActivity extends Activity
   // Controls
   CallFragment callFragment;
   HudFragment hudFragment;
+
+
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+      if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP)
+        enterPictureInPicture();
+    return super.onKeyUp(keyCode, event);
+  }
+
+  @Override
+  public void onPictureInPictureChanged(boolean inPictureInPicture) {
+    Log.d(TAG, "inPictureInPicture: " + inPictureInPicture);
+    if (inPictureInPicture) {
+      // Hide the controls in picture-in-picture mode.
+    } else {
+      // Restore the playback UI based on the playback status.
+    }
+  }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -471,7 +491,7 @@ public class CallActivity extends Activity
     if (logToast != null) {
       logToast.cancel();
     }
-    logToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
+    logToast = Toast.makeText(this, msg, Toast.LENGTH_LONG);
     logToast.show();
   }
 
